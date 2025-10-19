@@ -1,0 +1,15 @@
+<h1>ログイン</h1>
+
+<%= form_with url: '/top/login', method: :post, local: true do %>
+  <p>
+    <label>ユーザーID：</label>
+    <%= text_field_tag :uid %>
+  </p>
+  <p>
+    <label>パスワード：</label>
+    <%= password_field_tag :pass %>
+  </p>
+  <p>
+    <%= submit_tag 'ログイン' %>
+  </p>
+<% end %>
