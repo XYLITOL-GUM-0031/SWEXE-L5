@@ -13,3 +13,7 @@
     <%= submit_tag 'ログイン' %>
   </p>
 <% end %>
+
+<% if flash[:alert] %>
+  <p style="color:red;"><%= flash[:alert] %></p>
+<% end %>

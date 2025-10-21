@@ -8,17 +8,18 @@ class TopController < ApplicationController
 
   def login
     user = User.find_by(uid: params[:uid])
+
     if user && user.authenticate(params[:pass])
-      session[:user_id] = user.id
-      redirect_to root_path, notice: "ログイン成功しました！"
+      session[:login_uid] = user.uid
+      redirect_to root_path, notice: "ログインしました！"
     else
-      redirect_to '/top/login_form', alert: "ユーザーIDまたはパスワードが違います。"
+      flash[:alert] = "ユーザーIDまたはパスワードが違います。"
+      render :login_form
     end
   end
 
   def logout
-    session.delete(:user_id)
+    session.delete(:login_uid)
     redirect_to root_path, notice: "ログアウトしました。"
   end
 end
-

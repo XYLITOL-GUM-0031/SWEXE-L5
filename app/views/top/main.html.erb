@@ -1,24 +1,39 @@
 <h1>ツイート一覧</h1>
 
-<%= form_with url: '/tweets/create', method: :post, local: true do %>
-  <p>
-    <%= text_field_tag :message, '', placeholder: 'いまどうしてる？' %>
-    <%= submit_tag 'ツイート' %>
-  </p>
+<%# --- ログイン中だけツイートフォームを表示 --- %>
+<% if session[:login_uid] %>
+  <%= form_with url: '/tweets/create', method: :post, local: true do %>
+    <p>
+      <%= text_field_tag :message, '', placeholder: 'いまどうしてる？', style: 'width:60%;' %>
+      <%= submit_tag 'ツイート' %>
+    </p>
+  <% end %>
+<% else %>
+  <p>ツイートするにはログインが必要です。</p>
 <% end %>
 
 <hr>
 
+<%# --- ツイート一覧表示 --- %>
 <% @tweets.each do |tweet| %>
   <div style="border: 1px solid #ccc; padding: 8px; margin-bottom: 8px;">
-    <p><strong><%= tweet.user.uid %></strong></p>
+    <%# ユーザー名／IDをプロフィールページへのリンクに変更 %>
+    <p>
+      <strong>
+        <%= link_to(tweet.user.name.presence || tweet.user.uid, user_path(tweet.user)) %>
+      </strong>
+    </p>
+
     <p><%= tweet.message %></p>
     <p><small><%= tweet.created_at.strftime("%Y-%m-%d %H:%M") %></small></p>
 
-    <p>
-      ❤️ <%= tweet.likes %>　
-      <%= button_to 'いいね', like_tweet_path(tweet), method: :post %>
-      <%= button_to 'いいね解除', unlike_tweet_path(tweet), method: :post %>
-    </p>
+    <%# --- ログイン中だけ「いいね」ボタンを表示 --- %>
+    <% if session[:login_uid] %>
+      <p>
+        ❤️ <%= tweet.likes %>　
+        <%= button_to 'いいね', like_tweet_path(tweet), method: :post %>
+        <%= button_to 'いいね解除', unlike_tweet_path(tweet), method: :post %>
+      </p>
+    <% end %>
   </div>
 <% end %>

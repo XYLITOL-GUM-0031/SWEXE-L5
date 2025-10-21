@@ -3,26 +3,28 @@
   <head>
     <title><%= content_for(:title) || "L5" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
-    <%= yield :head %>
-
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
-
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
   <body>
+    <nav style="background-color: #f3f3f3; padding: 10px;">
+      <% if session[:login_uid] %>
+        <%= link_to "ホーム", root_path %> |
+        <% if User.find_by(uid: session[:login_uid]) %>
+          <%= link_to "プロフィール", user_path(User.find_by(uid: session[:login_uid])) %> |
+        <% end %>
+        <%= link_to "ログアウト", top_logout_path %>
+      <% else %>
+        <%= link_to "ホーム", root_path %> |
+        <%= link_to "ログイン", top_login_form_path %> |
+        <%= link_to "新規登録", new_user_path %>
+      <% end %>
+    </nav>
+    <hr>
+
     <%= yield %>
   </body>
 </html>
