@@ -8,24 +8,22 @@ class UsersController < ApplicationController
 
   # 新規登録処理
   def create
-    if User.exists?(uid: params[:user][:uid])
-      flash[:alert] = "このユーザーIDはすでに使用されています。"
-      redirect_to new_user_path
-    else
-      @user = User.new(
-        uid: params[:user][:uid],
-        name: params[:user][:name],
-        bio: params[:user][:bio]
-      )
-      @user.set_password(params[:user][:pass])  # ← パスワード暗号化
+    @user = User.new(
+      uid: params[:user][:uid],
+      name: params[:user][:name],
+      bio: params[:user][:bio],
+      password: params[:user][:password],
+      password_confirmation: params[:user][:password_confirmation]
+    )
 
-      if @user.save
-        flash[:notice] = "ユーザー登録が完了しました。ログインしてください。"
-        redirect_to top_login_form_path
-      else
-        flash[:alert] = "登録に失敗しました。"
-        render :new
-      end
+    if User.exists?(uid: @user.uid)
+      @user.errors.add(:uid, "はすでに使用されています。")
+      render :new
+    elsif @user.save
+      flash[:notice] = "ユーザー登録が完了しました。ログインしてください。"
+      redirect_to top_login_form_path
+    else
+      render :new
     end
   end
 

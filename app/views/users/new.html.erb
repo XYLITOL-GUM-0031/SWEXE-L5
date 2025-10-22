@@ -1,22 +1,43 @@
 <h1>ユーザー登録</h1>
 
+<%# --- エラーメッセージ表示 --- %>
+<% if @user && @user.errors.any? %>
+  <div style="color: red; border: 1px solid #f00; padding: 10px; margin-bottom: 15px;">
+    <h3>エラーがあります：</h3>
+    <ul>
+      <% @user.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
 <%= form_with model: @user, url: users_path, method: :post, local: true do |f| %>
   <p>
     <label>ユーザーID：</label>
     <%= f.text_field :uid %>
   </p>
+
   <p>
     <label>パスワード：</label>
-    <%= f.password_field :pass %>
+    <%= f.password_field :password %>
   </p>
+
+  <p>
+    <label>パスワード(確認)：</label>
+    <%= f.password_field :password_confirmation %>
+  </p>
+
   <p>
     <label>名前：</label>
     <%= f.text_field :name %>
   </p>
+
   <p>
     <label>自己紹介：</label>
     <%= f.text_area :bio %>
   </p>
+
   <p>
     <%= f.submit "登録" %>
   </p>

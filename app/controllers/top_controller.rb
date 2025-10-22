@@ -8,13 +8,11 @@ class TopController < ApplicationController
 
   def login
     user = User.find_by(uid: params[:uid])
-
-    if user && user.authenticate(params[:pass])
+    if user && user.authenticate(params[:password])
       session[:login_uid] = user.uid
-      redirect_to root_path, notice: "ログインしました！"
+      redirect_to root_path, notice: "ログイン成功しました！"
     else
-      flash[:alert] = "ユーザーIDまたはパスワードが違います。"
-      render :login_form
+      redirect_to '/top/login_form', alert: "ユーザーIDまたはパスワードが間違っています。"
     end
   end
 

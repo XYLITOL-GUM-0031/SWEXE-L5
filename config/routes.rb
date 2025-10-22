@@ -11,4 +11,6 @@ Rails.application.routes.draw do
   post 'tweets/:id/unlike', to: 'tweets#unlike', as: 'unlike_tweet'
 
   resources :users, only: [:new, :create, :show, :edit, :update]
+  resources :tweets, only: [:create, :destroy]
+
 end

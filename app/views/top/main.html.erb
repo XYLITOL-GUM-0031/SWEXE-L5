@@ -17,10 +17,14 @@
 <%# --- ツイート一覧表示 --- %>
 <% @tweets.each do |tweet| %>
   <div style="border: 1px solid #ccc; padding: 8px; margin-bottom: 8px;">
-    <%# ユーザー名／IDをプロフィールページへのリンクに変更 %>
+    <%# --- ユーザー情報（存在しない場合も安全に処理） --- %>
     <p>
       <strong>
-        <%= link_to(tweet.user.name.presence || tweet.user.uid, user_path(tweet.user)) %>
+        <% if tweet.user.present? %>
+          <%= link_to(tweet.user.name.presence || tweet.user.uid, user_path(tweet.user)) %>
+        <% else %>
+          <span>（ユーザー不明）</span>
+        <% end %>
       </strong>
     </p>
 
@@ -30,10 +34,18 @@
     <%# --- ログイン中だけ「いいね」ボタンを表示 --- %>
     <% if session[:login_uid] %>
       <p>
-        ❤️ <%= tweet.likes %>　
-        <%= button_to 'いいね', like_tweet_path(tweet), method: :post %>
-        <%= button_to 'いいね解除', unlike_tweet_path(tweet), method: :post %>
+        ❤️ <%= tweet.likes.count %>　
+        <% if tweet.liked?(current_user) %>
+          <%= button_to 'いいね解除', unlike_tweet_path(tweet), method: :post %>
+        <% else %>
+          <%= button_to 'いいね', like_tweet_path(tweet), method: :post %>
+        <% end %>
       </p>
+    <% end %>
+
+    <%# --- 自分のツイートにだけ削除ボタンを表示 --- %>
+    <% if current_user && tweet.user == current_user %>
+      <%= button_to '削除', tweet_path(tweet), method: :delete, data: { confirm: '本当に削除しますか？' } %>
     <% end %>
   </div>
 <% end %>

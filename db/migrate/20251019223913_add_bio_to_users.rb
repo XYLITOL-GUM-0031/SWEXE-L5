@@ -1,6 +1,5 @@
-class AddBioToUsers < ActiveRecord::Migration[8.0]
+class AddBioToUsers < ActiveRecord::Migration[7.1]
   def change
-    add_column :users, :name, :string
-    add_column :users, :bio, :text
+    # bio列はすでに存在するので何もしない
   end
 end
